@@ -1,97 +1,120 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Create 30 animated stars
-    const createStars = () => {
+document.addEventListener('DOMContentLoaded', function() {
+    // Create animated stars
+    function createStars() {
         const container = document.querySelector('.stars-container');
-        container.innerHTML = '';
+        const starCount = 35;
         
-        for(let i = 0; i < 30; i++) {
+        for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             
-            star.style.cssText = `
-                width: ${Math.random() * 3 + 2}px;
-                height: ${Math.random() * 3 + 2}px;
-                left: ${Math.random() * 100}%;
-                top: ${Math.random() * 100}%;
-                animation-duration: ${Math.random() * 5 + 3}s;
-                animation-delay: ${Math.random() * 2}s;
-                opacity: ${Math.random() * 0.5 + 0.5};
-            `;
+            // Random size between 2-6px
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            
+            // Random starting position
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            
+            // Random animation
+            const duration = Math.random() * 10 + 5;
+            star.style.animationDuration = `${duration}s`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
             
             container.appendChild(star);
         }
-    };
-
-    // Enhanced Carousel Class
-    class Carousel {
-        constructor(element, speed = 0.4) {
-            this.element = element;
-            this.track = element.querySelector('.carousel-track');
-            this.items = Array.from(this.track.children);
-            this.speed = speed;
-            this.position = 0;
-            this.isScrolling = true;
-            this.scrollTimeout = null;
-
-            this.cloneItems();
-            this.initEvents();
-            this.startAutoScroll();
-        }
-
-        cloneItems() {
-            const clones = this.items.map(item => item.cloneNode(true));
-            clones.forEach(clone => this.track.appendChild(clone));
-        }
-
-        initEvents() {
-            this.element.addEventListener('mouseenter', () => {
-                this.isScrolling = false;
-            });
-
-            this.element.addEventListener('mouseleave', () => {
-                this.isScrolling = true;
-            });
-
-            this.element.addEventListener('wheel', (e) => {
-                this.position += e.deltaY * 0.3;
-                clearTimeout(this.scrollTimeout);
-                this.scrollTimeout = setTimeout(() => {
-                    this.isScrolling = true;
-                }, 2000);
-            });
-        }
-
-        startAutoScroll() {
-            const animate = () => {
-                if(this.isScrolling) {
-                    this.position += this.speed;
-                    const maxScroll = this.items[0].offsetWidth * this.items.length;
-                    
-                    if(this.position >= maxScroll) {
-                        this.position = 0;
-                        this.track.style.transition = 'none';
-                        this.track.style.transform = `translateX(0)`;
-                        void this.track.offsetWidth;
-                    }
-                    
-                    this.track.style.transition = 'transform 0.3s ease-out';
-                    this.track.style.transform = `translateX(-${this.position}px)`;
-                }
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
     }
-
-    // Initialize everything
     createStars();
-    new Carousel(document.getElementById('photoCarousel'));
-    new Carousel(document.getElementById('messageCarousel'), 0.3);
 
-    // Click handlers
-    document.querySelectorAll('#photoCarousel img, .message').forEach(item => {
-        item.addEventListener('click', () => {
-            alert(item.tagName === 'IMG' ? `Viewing: ${item.alt}` : item.textContent);
+    // Carousel functionality
+    function setupCarousel(carouselId, scrollSpeed) {
+        const carousel = document.getElementById(carouselId);
+        const track = carouselId === 'photoCarousel' 
+            ? carousel.querySelector('.carousel-track')
+            : carousel;
+        const items = Array.from(track.children);
+        
+        // Clone items for infinite loop
+        const clones = items.map(item => item.cloneNode(true));
+        clones.forEach(clone => track.appendChild(clone));
+        
+        let scrollPos = 0;
+        let isAutoScrolling = true;
+        let isUserScrolling = false;
+        let scrollTimeout;
+        
+        // Auto-scroll function
+        function autoScroll() {
+            if (!isAutoScrolling || isUserScrolling) return;
+            
+            scrollPos += scrollSpeed;
+            const itemWidth = items[0].offsetWidth + 
+                parseInt(window.getComputedStyle(track).gap.replace('px', ''));
+            const maxScroll = itemWidth * items.length;
+            
+            if (scrollPos >= maxScroll) {
+                scrollPos = 0;
+                if (carouselId === 'photoCarousel') {
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(0)`;
+                    void track.offsetWidth; // Force reflow
+                } else {
+                    carousel.scrollLeft = 0;
+                }
+            }
+            
+            if (carouselId === 'photoCarousel') {
+                track.style.transition = 'transform 0.1s linear';
+                track.style.transform = `translateX(-${scrollPos}px)`;
+            } else {
+                carousel.scrollLeft = scrollPos;
+            }
+            
+            requestAnimationFrame(autoScroll);
+        }
+        
+        // Pause on hover
+        carousel.addEventListener('mouseenter', () => {
+            isAutoScrolling = false;
         });
-    });
+        
+        carousel.addEventListener('mouseleave', () => {
+            isAutoScrolling = true;
+        });
+        
+        // Manual scrolling
+        carousel.addEventListener('wheel', (e) => {
+            isUserScrolling = true;
+            clearTimeout(scrollTimeout);
+            
+            if (carouselId === 'photoCarousel') {
+                scrollPos += e.deltaY * 0.5;
+            } else {
+                scrollPos = carousel.scrollLeft + e.deltaY;
+            }
+            
+            scrollTimeout = setTimeout(() => {
+                isUserScrolling = false;
+            }, 1500);
+        });
+        
+        // Click handlers
+        items.concat(clones).forEach(item => {
+            item.addEventListener('click', () => {
+                if (carouselId === 'photoCarousel') {
+                    alert(`Showing: ${item.alt}`);
+                } else {
+                    alert(item.textContent);
+                }
+            });
+        });
+        
+        // Start auto-scroll
+        setTimeout(autoScroll, 1000);
+    }
+    
+    // Initialize carousels
+    setupCarousel('photoCarousel', 0.4); // Photos scroll faster
+    setupCarousel('messageCarousel', 0.3); // Messages scroll slower
 });
