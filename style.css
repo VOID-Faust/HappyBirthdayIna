@@ -1,1 +1,147 @@
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Stars Background */
+.stars-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+    filter: blur(0.5px);
+}
+
+@keyframes twinkle {
+    0% { transform: translate(120vw, -50px) rotate(0deg); opacity: 0.8; }
+    100% { transform: translate(-50px, 120vh) rotate(360deg); opacity: 0.4; }
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #5aa7e0, #7ab7eb);
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+}
+
+.letter {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.letter h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #2c5aa0;
+    margin-bottom: 1.5rem;
+}
+
+.portrait {
+    width: min(100%, 300px);
+    height: 300px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Carousels */
+.carousel {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    align-items: center;
+}
+
+#photoCarousel img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#photoCarousel img:hover {
+    transform: scale(1.05);
+}
+
+.message {
+    min-width: 260px;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.message:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .portrait {
+        width: 220px;
+        height: 220px;
+        margin-top: 1.5rem;
+    }
+    
+    .carousel {
+        height: 200px;
+    }
+    
+    #photoCarousel img {
+        width: 180px;
+        height: 180px;
+    }
+}
