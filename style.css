@@ -1,4 +1,4 @@
-/* Reset & Base Styles */
+/* Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -8,11 +8,12 @@
 body {
     font-family: 'Montserrat', sans-serif;
     color: #333;
-    line-height: 1.6;
+    line-height: 1.5;
     overflow-x: hidden;
+    background-color: #f8f9fa;
 }
 
-/* Stars Background */
+/* Animated Stars */
 .stars-container {
     position: fixed;
     top: 0;
@@ -25,15 +26,20 @@ body {
 
 .star {
     position: absolute;
-    background: rgba(255, 255, 255, 0.8);
+    background: white;
     border-radius: 50%;
-    animation: twinkle linear infinite;
+    animation: moveStar linear infinite;
+    opacity: 0.7;
     filter: blur(0.5px);
 }
 
-@keyframes twinkle {
-    0% { transform: translate(120vw, -50px) rotate(0deg); opacity: 0.8; }
-    100% { transform: translate(-50px, 120vh) rotate(360deg); opacity: 0.4; }
+@keyframes moveStar {
+    0% {
+        transform: translate(120vw, -50px) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50px, 120vh) rotate(360deg);
+    }
 }
 
 /* Hero Section */
@@ -42,12 +48,15 @@ body {
     min-height: 100vh;
     padding: 2rem;
     position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 3rem;
 }
 
 .hero-content {
+    display: flex;
     max-width: 1200px;
     margin: 0 auto;
-    display: flex;
     align-items: center;
     gap: 3rem;
     position: relative;
@@ -56,74 +65,132 @@ body {
 
 .letter {
     flex: 1;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .letter h1 {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: 2.8rem;
     color: #2c5aa0;
     margin-bottom: 1.5rem;
 }
 
+.letter-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
 .portrait {
-    width: min(100%, 300px);
-    height: 300px;
+    width: 280px;
+    height: 280px;
     object-fit: cover;
     border-radius: 50%;
     border: 5px solid white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Carousels */
-.carousel {
-    position: relative;
-    height: 250px;
-    overflow: hidden;
-    margin: 2rem auto;
+/* Sections */
+section {
+    padding: 2rem 1rem;
     max-width: 1200px;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 1;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: #2c5aa0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Photo Carousel */
+.photo-carousel {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+    margin: 1.5rem 0;
 }
 
 .carousel-track {
     display: flex;
-    gap: 1.5rem;
     height: 100%;
+    gap: 1.5rem;
+    align-items: center;
     position: absolute;
     left: 0;
-    align-items: center;
+    transition: transform 0.5s ease-out;
 }
 
-#photoCarousel img {
-    width: 220px;
-    height: 220px;
+.photo-carousel img {
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-#photoCarousel img:hover {
+.photo-carousel img:hover {
     transform: scale(1.05);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Message Carousel */
+.message-carousel {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: none;
+}
+
+.message-carousel::-webkit-scrollbar {
+    display: none;
 }
 
 .message {
-    min-width: 260px;
+    min-width: 250px;
     background: white;
     padding: 1.5rem;
     border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .message:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Design */
+@media (max-width: 992px) {
+    .hero-content {
+        gap: 2rem;
+    }
+    
+    .portrait {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .photo-carousel img {
+        width: 220px;
+        height: 220px;
+    }
+}
+
 @media (max-width: 768px) {
     .hero-content {
         flex-direction: column;
@@ -133,14 +200,41 @@ body {
     .portrait {
         width: 220px;
         height: 220px;
-        margin-top: 1.5rem;
+        margin-top: 2rem;
     }
     
-    .carousel {
+    .letter {
+        padding: 1.5rem;
+    }
+    
+    .photo-carousel {
+        height: 240px;
+    }
+    
+    .photo-carousel img {
+        width: 200px;
         height: 200px;
     }
     
-    #photoCarousel img {
+    .message {
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 1.5rem;
+    }
+    
+    .letter h1 {
+        font-size: 2.2rem;
+    }
+    
+    .photo-carousel {
+        height: 200px;
+    }
+    
+    .photo-carousel img {
         width: 180px;
         height: 180px;
     }
